@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML Page</title>
+    <link rel="stylesheet" href="1style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="#"><i class="fa fa-home"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-medkit"></i> Products</a></li>
+            <li><a href="#"><i class="fa fa-shopping-cart"></i> Orders</a></li>
+            <li><a href="#"><i class="fa fa-archive"></i> Inventory</a></li>
+            <li><a href="#"><i class="fa fa-money"></i> Payment</a></li>
+            <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fa fa-sign-out"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content">
+        <div class="header" >
+            <img src="profile-icon.png" alt="Profile Icon"class="profile-icon" onclick="toggleSidebar()">
+            <a href="firstpage.html">
+                <img src="logo.png" alt="Logo Icon" class="logo-icon">
+            </a>
+            <img src="cart-icon.png" alt="Cart Icon" class="cart-icon"><br>
+        </div>
+        <div><input type="text" placeholder= "Search Medicine" class="Search"></div>
+    
+    
+        <nav class="categories">
+            <p>Categories:</p>
+            <button type="submit" class="category-btn">Vitamins & Supplements</button>
+            <button type="submit" class="category-btn">Baby Care</button>
+            <button type="submit" class="category-btn">Ayurvedic</button>
+            <button type="submit" class="category-btn">Women's Care</button>
+            <button type="submit" class="category-btn">Over the Counter</button>
+            <button type="submit" class="category-btn">Personal Care</button>
+            <button type="submit" class="category-btn">Health Monitors</button>
+            <!-- <button type="submit" class="category-btn">Medical Devices</button> -->
+            <!-- <button type="submit" class="category-btn">Diabetes Care</button> -->
+            <!-- <button type="submit" class="category-btn">Homeopathy</button> -->
+        </nav>
+    
+    
+        <div class="offer-banner">
+            <img src="less-than.png" alt="" class="next-btn">
+            <img src="offer-banner.png" alt="offer-banner" class="banner">
+            <img src="greater-tham.png" alt="" class="next-btn">
+        </div>
+    
+    
+        <div class="product-container">
+            <div class="product-card">
+                <img src="medicine-image1.jpg" alt="Medicine Image" class="product-image">
+                <h2 class="product-name">Paracetamol 500mg</h2>
+                <p class="product-price">₹50 <span class="discount">₹60</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="medicine-image2.jpg" alt="Medicine Image" class="product-image">
+                <h2 class="product-name">Ibuprofen 200mg</h2>
+                <p class="product-price">₹80 <span class="discount">₹100</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="medicine-image3.jpg" alt="Medicine Image" class="product-image">
+                <h2 class="product-name">Cough Syrup</h2>
+                <p class="product-price">₹120 <span class="discount">₹150</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="medicine-image4.jpg" alt="Medicine Image" class="product-image">
+                <h2 class="product-name">Vitamin C Tablets</h2>
+                <p class="product-price">₹200 <span class="discount">₹250</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+    
+        
+        <div class="product-container">
+            <div class="product-card">
+                <img src="device-image1.jpg" alt="Medical Device" class="product-image">
+                <h2 class="product-name">Digital Thermometer</h2>
+                <p class="product-price">₹300 <span class="discount">₹350</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="device-image2.jpg" alt="Medical Device" class="product-image">
+                <h2 class="product-name">Blood Pressure Monitor</h2>
+                <p class="product-price">₹1200 <span class="discount">₹1500</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="device-image3.jpg" alt="Medical Device" class="product-image">
+                <h2 class="product-name">Pulse Oximeter</h2>
+                <p class="product-price">₹800 <span class="discount">₹1000</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="device-image4.jpg" alt="Medical Device" class="product-image">
+                <h2 class="product-name">Glucose Meter</h2>
+                <p class="product-price">₹1500 <span class="discount">₹1800</span></p>
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+
+    </div>    
+
+    <div class="credits">
+        <!-- <p1>About Us</p1>  
+        <p2>Contact Us</p2> -->
+        <p>Connect With Us</p>
+        <a href="">
+            <i class="fa fa-twitter" style="font-size:30px; padding-right:10px;"></i>
+            <i class="fa fa-instagram" style="font-size:30px; padding-right:10px;" ></i>
+            <i class="fa fa-facebook" style="font-size:30px"></i>
+        </a>
+            
+        <p>&copy; 2025. All rights reserved, PillPoint</p>
+    </div>
+
+    <script src="script.js" ></script>
+</body>
+</html>
