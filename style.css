@@ -1,114 +1,23 @@
-body{
-    background-image: url('bg1.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;  
-    background-size: cover;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-
-.login{
-    /* border: 2px solid red; */
-    background: rgba(24, 26, 27, 0.9);
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 0px 15px;;
-    border-radius: 10px;
-    height: 420px;
-    margin: 9%;
-    padding-top: 40px;
-    margin-left: 30%;
-    margin-right: 30%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+.container{
+    width: 100%;
+    height: 100vh;
+    background: #222;
 }
-
-.Register{
-    /* border: 2px solid red; */
-    background: rgba(24, 26, 27, 0.9);
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 0px 15px;;
-    border-radius: 10px;
-    height: 550px;
-    margin: 5%;
-    padding-top: 40px;
-    margin-left: 30%;
-    margin-right: 30%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+.swiper{
+    width: 80%;
+    height: fit-content;
 }
-
-h2{
-    color: #ffffff;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-    align-items: center;
+.swiper-slide img{
+    width: 100%;
 }
-
-h1{
-    color: #ffffff;
-    /* padding-bottom: 10px;
-    margin-bottom: 30px; */
-    align-items: center;
+.swiper .swiper-button-prev, .swiper .swiper-button-next{
+    color: #100f0f;
 }
-
-p{
-    font-family: arial, sans-serif;
-    color: beige;
-    font-weight: bold;
-    padding-left: 70px;
-    text-align: start;
+.swiper .swiper-pagination-bullet-active{
+    background: #040404;
 }
-
-a{
-    color: #df8943;
-}
-
-a:hover{
-    color: #F9E4BC;
-}
-
-input{
-    padding: 10px;
-    border-radius: 10px;
-    border-color: #F9E4BC;
-}
-
-.login-btn{
-    color: aquamarine;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #ff4800;
-    border-color: #F9E4BC;
-    padding: 10px 70px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-input.Username{
-    margin-bottom: 20px;
-    width: 70%;
-}
-
-input.Username1{
-    margin-bottom: 10px;
-    width: 70%;
-}
-
-input.Password{
-    margin-bottom: 30px;
-    width: 70%;
-}
-
-input.Password1{
-    margin-bottom: 10px;
-    width: 70%;
-}
-
-input.Email{
-    margin-bottom: 10px;
-    width: 70%;
-}
-
-input.dob{
-    margin-bottom: 10px;
-    width: 70%;
-}
-
