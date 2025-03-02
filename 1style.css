@@ -224,9 +224,14 @@ img{
     color: aliceblue;
 }
 
-.banner{
+img.banner{
     width: 70%;
+}
+
+.banner{
+    width: 100vw;
     height: 150px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Faster transition */
 }
 
 .offer-banner{
@@ -237,6 +242,7 @@ img{
 
 .next-btn{
     margin-top: 55px;
+    z-index: 10;
     width: 40px;
     height: 40px;
 }
