@@ -79,3 +79,46 @@ document.getElementById("Search").addEventListener("input", function () {
         fetchMedicineData(searchInput); // Fetch data after delay
     }, 500); // Delay of 500ms to prevent excessive API calls
 });
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const banners = [
+        "offer-banner.png",  // First image
+        "offer-banner1.png", // Second image
+        "offer-banner3.png"  // Third image
+    ];
+
+    let currentIndex = 0;
+    const bannerImg = document.querySelector(".offer-banner .banner");
+    const nextBtns = document.querySelectorAll(".offer-banner .next-btn");
+
+    function changeBanner(next = true) {
+        bannerImg.style.transition = "transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
+
+        // Slide effect direction
+        bannerImg.style.transform = next ? "translateX(-100%)" : "translateX(100%)";
+        bannerImg.style.opacity = "0";
+
+        setTimeout(() => {
+            currentIndex = next
+                ? (currentIndex + 1) % banners.length
+                : (currentIndex - 1 + banners.length) % banners.length;
+
+            bannerImg.src = banners[currentIndex];
+
+            // Reset position for smooth transition
+            bannerImg.style.transition = "none";
+            bannerImg.style.transform = next ? "translateX(100%)" : "translateX(-100%)";
+
+            setTimeout(() => {
+                bannerImg.style.transition = "transform 1s ease-in-out, opacity 1s ease-in-out";
+                bannerImg.style.transform = "translateX(0)";
+                bannerImg.style.opacity = "1";
+            }, 50);
+        }, 100);
+    }
+
+    nextBtns[0].addEventListener("click", () => changeBanner(false)); // "<" button
+    nextBtns[1].addEventListener("click", () => changeBanner(true));  // ">" button
+});
