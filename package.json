@@ -1,0 +1,25 @@
+{
+  "name": "pharmacy-management-system",
+  "version": "1.0.0",
+  "main": "product.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Manthan0110/Pharmacy-Management-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Manthan0110/Pharmacy-Management-System/issues"
+  },
+  "homepage": "https://github.com/Manthan0110/Pharmacy-Management-System#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql": "^2.18.1"
+  }
+}

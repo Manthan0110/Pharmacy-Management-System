@@ -10,13 +10,11 @@
 <body>
     <div class="sidebar" id="sidebar">
         <ul>
-            <li><a href="#"><i class="fa fa-home"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fa fa-medkit"></i> Products</a></li>
-            <li><a href="#"><i class="fa fa-shopping-cart"></i> Orders</a></li>
-            <li><a href="#"><i class="fa fa-archive"></i> Inventory</a></li>
-            <li><a href="#"><i class="fa fa-money"></i> Payment</a></li>
-            <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-            <li><a href="#"><i class="fa fa-sign-out"></i> Logout</a></li>
+            <li><a href="firstpage.html"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="product.html"><i class="fa fa-medkit"></i> Products</a></li>
+            <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Orders</a></li>
+            <li><a href="payment.html"><i class="fa fa-money"></i> Payment</a></li>
+            <li><a href="login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
         </ul>
     </div>
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
@@ -36,13 +34,13 @@
     
         <nav class="categories">
             <p>Categories:</p>
-            <button type="submit" class="category-btn">Vitamins & Supplements</button>
-            <button type="submit" class="category-btn">Baby Care</button>
-            <button type="submit" class="category-btn">Ayurvedic</button>
-            <button type="submit" class="category-btn">Women's Care</button>
-            <button type="submit" class="category-btn">Over the Counter</button>
-            <button type="submit" class="category-btn">Personal Care</button>
-            <button type="submit" class="category-btn">Health Monitors</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('vitamins')" >Vitamins & Supplements</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('motherbaby')" >Mother & Baby Care</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('ayurvedic')" >Ayurvedic</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('women')" >Women's Care</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('skincare')" >Skin Care</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('personal')" >Personal Care</button>
+            <button type="submit" class="category-btn" onclick="fetchMedicines('healthmonitor')" >Health Monitors</button>
             <!-- <button type="submit" class="category-btn">Medical Devices</button> -->
             <!-- <button type="submit" class="category-btn">Diabetes Care</button> -->
             <!-- <button type="submit" class="category-btn">Homeopathy</button> -->
@@ -56,7 +54,7 @@
         </div>
     
     
-        <div class="product-container">
+        <div class="product-container" id="product-container">
             <div class="product-card">
                 <img src="medicine-image1.jpg" alt="Medicine Image" class="product-image">
                 <h2 class="product-name">Paracetamol 500mg</h2>
@@ -84,7 +82,7 @@
         </div>
     
         
-        <div class="product-container">
+        <!-- <div class="product-container" id="product-container">
             <div class="product-card">
                 <img src="device-image1.jpg" alt="Medical Device" class="product-image">
                 <h2 class="product-name">Digital Thermometer</h2>
@@ -109,7 +107,7 @@
                 <p class="product-price">₹1500 <span class="discount">₹1800</span></p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
-        </div>
+        </div> -->
 
     </div>    
 

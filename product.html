@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="1style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="products.css"> <!-- Optimized CSS -->
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="firstpage.html"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="product.html"><i class="fa fa-medkit"></i> Products</a></li>
+            <li><a href="orders.html"><i class="fa fa-shopping-cart"></i> Orders</a></li>
+            <li><a href="payment.html"><i class="fa fa-money"></i> Payment</a></li>
+            <li><a href="login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content">
+        <div class="header" >
+            <img src="profile-icon.png" alt="Profile Icon"class="profile-icon" onclick="toggleSidebar()">
+            <a href="firstpage.html">
+                <img src="logo.png" alt="Logo Icon" class="logo-icon">
+            </a>
+            <img src="cart-icon.png" alt="Cart Icon" class="cart-icon"><br>
+        </div>
+        <div><input type="text" id="Search" placeholder="Enter medicine name">
+            <div id="medicine-info"></div>
+            </div>
+    
+    
+        <nav class="categories">
+            <p>Categories:</p>
+            <button type="submit" class="category-btn">Vitamins & Supplements</button>
+            <button type="submit" class="category-btn">Baby Care</button>
+            <button type="submit" class="category-btn">Ayurvedic</button>
+            <button type="submit" class="category-btn">Women's Care</button>
+            <button type="submit" class="category-btn">Over the Counter</button>
+            <button type="submit" class="category-btn">Personal Care</button>
+            <button type="submit" class="category-btn">Health Monitors</button>
+            <!-- <button type="submit" class="category-btn">Medical Devices</button> -->
+            <!-- <button type="submit" class="category-btn">Diabetes Care</button> -->
+            <!-- <button type="submit" class="category-btn">Homeopathy</button> -->
+        </nav>
+
+    <!-- Product Section -->
+    <section class="product-list" id="product-list"></section>
+
+    <script src="script.js"></script>
+    <script src="product.js"></script>
+</body>
+</html>
