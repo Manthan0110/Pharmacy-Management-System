@@ -131,3 +131,136 @@ function fetchMedicines(category) {
         })
         .catch(error => console.error("Error fetching medicines:", error));
 }
+
+
+document.getElementById("Search").addEventListener("input", function() {
+    const query = this.value.trim();
+    if (query.length === 0) {
+        document.getElementById("medicine-info").innerHTML = "";
+        return;
+    }
+
+    fetch(`http://localhost:3000/search?q=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            let resultHTML = "<div class='search-results'>";
+            if (data.length > 0) {
+                data.forEach(medicine => {
+                    resultHTML += `
+                        <div class="product-card">
+                            <img src="${medicine.image_url}" alt="${medicine.name}" class="product-image">
+                            <h2 class="product-name">${medicine.name}</h2>
+                            <p class="product-price">${medicine.price}</p>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    `;
+                });
+            } else {
+                resultHTML += "<p>No medicines found.</p>";
+            }
+            resultHTML += "</div>";
+            document.getElementById("medicine-info").innerHTML = resultHTML;
+        })
+        .catch(error => console.error("Error fetching search results:", error));
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchProducts();
+
+    const searchInput = document.getElementById("Search");
+    searchInput.addEventListener("input", function() {
+        const query = searchInput.value.trim();
+        const container = document.querySelector(".product-container");
+        
+        if (query.length === 0) {
+            fetchProducts(); // Reload products if search is empty
+            return;
+        }
+
+        fetch(`http://localhost:3000/search?q=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                // Remove only product cards, keep other elements
+                document.querySelectorAll(".product-card").forEach(el => el.remove());
+
+                if (data.length === 0) {
+                    container.innerHTML += "<p class='no-results'>No products found.</p>";
+                    return;
+                }
+
+                data.slice(0, 10).forEach(product => { // Limit to 10 results
+                    const productCard = document.createElement("div");
+                    productCard.classList.add("product-card");
+                    productCard.innerHTML = `
+                        <img src="${product.image_url}" alt="${product.name}" class="product-image">
+                        <h2 class="product-name">${product.name}</h2>
+                        <p class="product-price">${product.price}</p>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn decrease">-</button>
+                            <input type="number" class="quantity-input" value="1" min="1">
+                            <button class="quantity-btn increase">+</button>
+                        </div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    `;
+                    container.appendChild(productCard);
+                });
+
+                addQuantityButtonListeners();
+            })
+            .catch(error => console.error("Error fetching search results:", error));
+    });
+});
+
+
+function fetchProducts() {
+    fetch("http://localhost:3000/all-products") // Fetch products from backend
+        .then(response => response.json())
+        .then(data => {
+            const container = document.querySelector(".product-container");
+            container.innerHTML = ""; // Clear previous results
+
+            if (data.length === 0) {
+                container.innerHTML = "<p class='no-results'>No products available.</p>";
+                return;
+            }
+
+            data.forEach(product => {
+                const productCard = document.createElement("div");
+                productCard.classList.add("product-card");
+                productCard.innerHTML = `
+                    <img src="${product.image_url}" alt="${product.name}" class="product-image">
+                    <h2 class="product-name">${product.name}</h2>
+                    <p class="product-price">${product.price}</p>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn decrease">-</button>
+                        <input type="number" class="quantity-input" value="1" min="1">
+                        <button class="quantity-btn increase">+</button>
+                    </div>
+                    <button class="add-to-cart">Add to Cart</button>
+                `;
+                container.appendChild(productCard);
+            });
+
+            addQuantityButtonListeners();
+        })
+        .catch(error => console.error("Error fetching products:", error));
+}
+
+function addQuantityButtonListeners() {
+    document.querySelectorAll(".decrease").forEach(btn => {
+        btn.addEventListener("click", function () {
+            let input = this.nextElementSibling;
+            if (input.value > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        });
+    });
+
+    document.querySelectorAll(".increase").forEach(btn => {
+        btn.addEventListener("click", function () {
+            let input = this.previousElementSibling;
+            input.value = parseInt(input.value) + 1;
+        });
+    });
+}

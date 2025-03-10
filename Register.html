@@ -13,13 +13,39 @@
             <p>Full Name</p>
             <input type="text" class="Username1" placeholder="Enter Your Full Name"><br>
             <p>Email</p>
-            <input type="text" class="Email" placeholder="Enter Your Email"><br>
+            <input type="email" class="Email" placeholder="Enter Your Email"><br>
             <p>Date of Birth</p>
             <input type="date" class="dob" placeholder="Enter Your Date of Birth"><br>
             <p>Password</p>
             <input type="password" class="Password1" placeholder="Enter Your Password"><br>
-            <a href="firstpage.html"><button type="submit" class="login-btn">Register</button></a>
+            <button type="submit" class="login-btn">Register</button>
         </div>
     </div>
+
+    <script>
+        document.querySelector(".login-btn").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            let full_name = document.querySelector(".Username1").value;
+            let email = document.querySelector(".Email").value;
+            let dob = document.querySelector(".dob").value;
+            let password = document.querySelector(".Password1").value;
+    
+            fetch("http://localhost:3000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ full_name, email, dob, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message === "User registered successfully!") {
+                    window.location.href = "login.html"; // Redirect to login
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+    
 </body>
 </html>

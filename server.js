@@ -1,13 +1,27 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+    origin: ['http://localhost:5500', 'http://127.0.0.1:5500'],
+    credentials: true
+}));
+
+
+// Session setup
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
 
 // MySQL Connection
 const db = mysql.createConnection({
@@ -203,6 +217,122 @@ app.get('/medicines/:category', (req, res) => {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);
+    });
+});
+
+// Search API
+app.get("/search", (req, res) => {
+    const searchQuery = req.query.q;
+    if (!searchQuery) return res.json([]);
+
+    const query = `
+        (SELECT name, price, image_url FROM ayurvedic WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM healthmonitor WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM medicines WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM motherbaby WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM personal WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM skincare WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM vitamins WHERE name LIKE ? AND price <> 'NA')
+        UNION ALL 
+        (SELECT name, price, image_url FROM women WHERE name LIKE ? AND price <> 'NA')
+        LIMIT 10`;
+
+    const searchParam = `%${searchQuery}%`;
+    db.query(query, Array(8).fill(searchParam), (err, results) => {
+        if (err) {
+            console.error("Error fetching search results:", err);
+            res.status(500).json({ error: "Database error" });
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+// Register API
+app.post('/register', (req, res) => {
+    const { full_name, email, dob, password } = req.body;
+
+    // Check if email already exists
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (results.length > 0) {
+            return res.status(400).json({ error: 'Email already registered!' });
+        }
+
+        // Hash password before storing
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        // Insert new user
+        db.query('INSERT INTO users (full_name, email, dob, password) VALUES (?, ?, ?, ?)',
+            [full_name, email, dob, hashedPassword],
+            (err, result) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                res.json({ message: 'User registered successfully!' });
+            }
+        );
+    });
+});
+
+
+// Login API
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+
+        const user = results[0];
+
+        // Compare hashed password
+        if (!bcrypt.compareSync(password, user.password)) {
+            return res.status(401).json({ error: 'Incorrect password' });
+        }
+
+        // Store user session
+        req.session.user = { id: user.id, email: user.email, full_name: user.full_name };
+
+        res.json({ message: 'Login successful!', redirect: 'firstpage.html' });
+    });
+});
+
+app.get("/all-products", (req, res) => {
+    const query = `
+        SELECT name, price, image_url FROM ayurvedic WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM healthmonitor WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM medicines WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM motherbaby WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM personal WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM skincare WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM vitamins WHERE price IS NOT NULL AND price <> 'NA'
+        UNION ALL 
+        SELECT name, price, image_url FROM women WHERE price IS NOT NULL AND price <> 'NA'
+        ORDER BY RAND() LIMIT 16`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error("Error fetching products:", err);
+            res.status(500).json({ error: "Database error" });
+        } else {
+            res.json(results);
+        }
     });
 });
 
