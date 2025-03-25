@@ -119,3 +119,5 @@ function addConfirmButton() {
     confirmButton.classList.add("confirm-btn");
     ordersContainer.appendChild(confirmButton);
 }
+
+

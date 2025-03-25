@@ -1,3 +1,10 @@
+// document.addEventListener("DOMContentLoaded", function() {
+//     let user = localStorage.getItem("user");
+//     if (!user && window.location.pathname !== "/User/html/login.html") {
+//         window.location.href = "/User/html/login.html";
+//     }
+// });
+
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
@@ -6,111 +13,58 @@ function toggleSidebar() {
     sidebar.classList.toggle("active");
     overlay.classList.toggle("active");
 
-
-    if (sidebar.style.left === "0px") 
-        {
-            sidebar.style.left = "-250px"; // Hide Sidebar
+    if (sidebar.style.left === "0px") {
+        sidebar.style.left = "-250px"; // Hide Sidebar
         header.classList.remove("fixed"); // Remove Fixed Position
-        } else
-        {
-            sidebar.style.left = "0px"; // Show Sidebar
-            header.classList.add("fixed"); // Make Header Fixed
-        }
+    } else {
+        sidebar.style.left = "0px"; // Show Sidebar
+        header.classList.add("fixed"); // Make Header Fixed
+    }
 }
 
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", function () { 
-    // Waits for the HTML document to be fully loaded before running the script.
-
-    const banners = [
-        "offer-banner.png",  // First image
-        "offer-banner1.png", // Second image
-        "offer-banner3.png"  // Third image
-    ];
-    // Array storing the image file paths for the offer banners.
-
-    let currentIndex = 0;  
-    // Variable to keep track of the currently displayed image index.
-
-    const bannerImg = document.querySelector(".offer-banner .banner");  
-    // Selects the image element inside the offer-banner div.
-
-    const nextBtns = document.querySelectorAll(".offer-banner .next-btn");  
-    // Selects both the left ("<") and right (">") navigation buttons.
+    const banners = ["/offer-banner.png", "/offer-banner1.png", "/offer-banner3.png"];
+    let currentIndex = 0;
+    const bannerImg = document.querySelector(".offer-banner .banner");
+    const nextBtns = document.querySelectorAll(".offer-banner .next-btn");
 
     function changeBanner(next = true) {  
-        // Function to change the banner when a navigation button is clicked.
-        // 'next' determines the direction of change: 
-        // true for forward (">"), false for backward ("<").
-
-        bannerImg.style.transition = "transform 0.5s ease-in-out, opacity 0.5s ease-in-out";  
-        // Applies a transition effect for smooth sliding and fading.
-
-        bannerImg.style.transform = next ? "translateX(-100%)" : "translateX(100%)";  
-        // Moves the current image out of the screen to the left (-100%) if going forward,
-        // or to the right (100%) if going backward.
-
-        bannerImg.style.opacity = "0";  
-        // Fades out the image.
+        bannerImg.style.transition = "transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
+        bannerImg.style.transform = next ? "translateX(-100%)" : "translateX(100%)";
+        bannerImg.style.opacity = "0";
 
         setTimeout(() => {  
-            // Waits for the slide-out animation to complete before changing the image.
-
             currentIndex = next  
                 ? (currentIndex + 1) % banners.length  
                 : (currentIndex - 1 + banners.length) % banners.length;
-            // Updates the index:  
-            // If going forward, increment index (loop back if at the end).  
-            // If going backward, decrement index (loop back if at the start).
 
             bannerImg.src = banners[currentIndex];  
-            // Changes the image source to the new banner.
-
-            bannerImg.style.transition = "none";  
-            // Removes transition temporarily to reset position instantly.
-
-            bannerImg.style.transform = next ? "translateX(100%)" : "translateX(-100%)";  
-            // Moves the new image off-screen in the opposite direction 
-            // so it can slide in smoothly.
+            bannerImg.style.transition = "none";
+            bannerImg.style.transform = next ? "translateX(100%)" : "translateX(-100%)";
 
             setTimeout(() => {  
-                // Short delay before applying the transition again for a smooth slide-in effect.
-
                 bannerImg.style.transition = "transform 1s ease-in-out, opacity 1s ease-in-out";  
-                // Re-enables the transition for a smooth slide-in animation.
-
                 bannerImg.style.transform = "translateX(0)";  
-                // Moves the new image back into the screen.
-
                 bannerImg.style.opacity = "1";  
-                // Fades the new image in.
-
             }, 50);  
-            // The delay ensures the transition is applied after repositioning.
-
         }, 100);  
-        // This timeout ensures the current image fully moves out before updating the source.
     }
 
     nextBtns[0].addEventListener("click", () => changeBanner(false));  
-    // Adds event listener to the "<" button, moving to the previous banner when clicked.
-
     nextBtns[1].addEventListener("click", () => changeBanner(true));  
-    // Adds event listener to the ">" button, moving to the next banner when clicked.
 });
 
-
+fetchProducts();
 
 function fetchMedicines(category) {
+    console.log(`Fetching medicines for category: ${category}`); // Debugging log
+
     fetch(`http://localhost:3000/medicines/${category}`)
         .then(response => response.json())
         .then(data => {
+            console.log("Fetched data:", data); // Debugging log
             const container = document.getElementById("product-container");
-            container.innerHTML = ""; // Clear previous results
+            container.innerHTML = ""; 
 
             if (data.length === 0) {
                 container.innerHTML = "<p>No products available in this category.</p>";
@@ -118,16 +72,26 @@ function fetchMedicines(category) {
             }
 
             data.forEach(medicine => {
-                const productCard = `
-                    <div class="product-card">
-                        <img src="${medicine.image_url}" alt="${medicine.name}" class="product-image">
-                        <h2 class="product-name">${medicine.name}</h2>
-                        <p class="product-price">${medicine.price}</p>
-                        <button class="add-to-cart">Add to Cart</button>
+                const productCard = document.createElement("div");
+                productCard.classList.add("product-card");
+                productCard.innerHTML = `
+                    <img src="${medicine.image_url}" alt="${medicine.name}" class="product-image">
+                    <h2 class="product-name">${medicine.name}</h2>
+                    <p class="product-price">${medicine.price}</p>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn decrease">-</button>
+                        <input type="number" class="quantity-input" value="1" min="1">
+                        <button class="quantity-btn increase">+</button>
                     </div>
+                    <button class="add-to-cart">Add to Cart</button>
                 `;
-                container.innerHTML += productCard;
+                container.appendChild(productCard);
             });
+
+            console.log("Products loaded. Attaching event listeners..."); // Debugging log
+
+            addQuantityButtonListeners();  
+            addCartFunctionality();  
         })
         .catch(error => console.error("Error fetching medicines:", error));
 }
@@ -155,33 +119,31 @@ document.getElementById("Search").addEventListener("input", function() {
                         </div>
                     `;
                 });
-            } else {
-                resultHTML += "<p>No medicines found.</p>";
             }
             resultHTML += "</div>";
             document.getElementById("medicine-info").innerHTML = resultHTML;
+            addQuantityButtonListeners();
+            addCartFunctionality();
         })
         .catch(error => console.error("Error fetching search results:", error));
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
     fetchProducts();
-
     const searchInput = document.getElementById("Search");
+
     searchInput.addEventListener("input", function() {
         const query = searchInput.value.trim();
         const container = document.querySelector(".product-container");
         
         if (query.length === 0) {
-            fetchProducts(); // Reload products if search is empty
+            fetchProducts(); 
             return;
         }
 
         fetch(`http://localhost:3000/search?q=${query}`)
             .then(response => response.json())
             .then(data => {
-                // Remove only product cards, keep other elements
                 document.querySelectorAll(".product-card").forEach(el => el.remove());
 
                 if (data.length === 0) {
@@ -189,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                data.slice(0, 10).forEach(product => { // Limit to 10 results
+                data.slice(0, 10).forEach(product => {
                     const productCard = document.createElement("div");
                     productCard.classList.add("product-card");
                     productCard.innerHTML = `
@@ -205,20 +167,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     `;
                     container.appendChild(productCard);
                 });
-
                 addQuantityButtonListeners();
+                addCartFunctionality();
             })
             .catch(error => console.error("Error fetching search results:", error));
     });
 });
 
-
 function fetchProducts() {
-    fetch("http://localhost:3000/all-products") // Fetch products from backend
+    fetch("http://localhost:3000/all-products")
         .then(response => response.json())
         .then(data => {
             const container = document.querySelector(".product-container");
-            container.innerHTML = ""; // Clear previous results
+            container.innerHTML = "";
 
             if (data.length === 0) {
                 container.innerHTML = "<p class='no-results'>No products available.</p>";
@@ -241,11 +202,61 @@ function fetchProducts() {
                 `;
                 container.appendChild(productCard);
             });
-
             addQuantityButtonListeners();
+            addCartFunctionality();
         })
         .catch(error => console.error("Error fetching products:", error));
 }
+
+function addCartFunctionality() {
+    console.log("🛒 addCartFunctionality triggered!"); // Debugging log
+    const buttons = document.querySelectorAll(".add-to-cart");
+
+    if (buttons.length === 0) {
+        console.log("⚠️ No add-to-cart buttons found!");
+    }
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            console.log("🛒 Add to Cart button clicked!"); // Debugging log
+
+            const productCard = this.closest(".product-card");
+            const name = productCard.querySelector(".product-name").textContent;
+            const price = productCard.querySelector(".product-price").textContent.replace("₹", "").trim();
+            const quantity = parseInt(productCard.querySelector(".quantity-input").value);
+
+            const orderData = {
+                medicineName: name,
+                quantity: quantity,
+                price: parseFloat(price) * quantity, 
+            };
+
+            console.log("Sending order data:", orderData); // Debugging log before sending request
+
+            fetch("http://localhost:3000/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response from server:", data); // Debugging log after response
+                if (data.success) {
+                    alert("Added to Cart!");
+                } else {
+                    alert("✅ Order placed successfully");
+                }
+            })
+            .catch(error => {
+                console.error("Error placing order:", error);
+                alert("Error adding to cart. Please check the server.");
+            });
+        });
+    });
+
+    console.log(`Attached add-to-cart event to ${buttons.length} buttons`);
+}
+
 
 function addQuantityButtonListeners() {
     document.querySelectorAll(".decrease").forEach(btn => {
@@ -263,4 +274,16 @@ function addQuantityButtonListeners() {
             input.value = parseInt(input.value) + 1;
         });
     });
+}
+
+function logout() {
+    // Clear session storage or local storage
+    localStorage.removeItem("user"); // If using localStorage for authentication
+    sessionStorage.removeItem("user"); // If using sessionStorage
+
+    // Optionally, clear cookies if using them for login sessions
+    document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // Redirect to login page
+    window.location.href = "/User/html/login.html";
 }

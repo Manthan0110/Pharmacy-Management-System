@@ -283,27 +283,32 @@ app.post('/register', (req, res) => {
 
 
 // Login API
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
-    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        if (results.length === 0) {
-            return res.status(401).json({ error: 'User not found' });
+    db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+        if (err) {
+            console.error("Database query error:", err);
+            return res.status(500).json({ error: "Database error" });
         }
 
-        const user = results[0];
+        if (result.length > 0) {
+            const user = result[0];
 
-        // Compare hashed password
-        if (!bcrypt.compareSync(password, user.password)) {
-            return res.status(401).json({ error: 'Incorrect password' });
+            bcrypt.compare(password, user.password, (err, match) => {
+                if (match) {
+                    if (user.role === "admin") {
+                        res.json({ message: "Login successful!", role: "admin", redirect: "/admin/html/index.html" });
+                    } else {
+                        res.json({ message: "Login successful!", role: "customer", redirect: "/User/html/firstpage.html" });
+                    }
+                } else {
+                    res.json({ error: "Invalid Password!" });
+                }
+            });
+        } else {
+            res.json({ error: "User not found!" });
         }
-
-        // Store user session
-        req.session.user = { id: user.id, email: user.email, full_name: user.full_name };
-
-        res.json({ message: 'Login successful!', redirect: 'firstpage.html' });
     });
 });
 

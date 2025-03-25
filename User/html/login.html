@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/User/css/style.css">
+</head>
+<body>
+    <div>
+        <div class="login">
+            <h2>Pharma Management</h2>
+            <p>Username</p>
+            <input type="text" class="Username" placeholder="Enter Your Username"><br>
+            <p>Password</p>
+            <input type="text" class="Password" placeholder="Enter Your Password"><br>
+
+            <a href="/User/html/firstpage.html"><button type="submit" class="login-btn">Login</button></a><br>
+            <a href="/User/html/Register.html">Become a Member</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector(".login-btn").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    let email = document.querySelector(".Username").value;
+    let password = document.querySelector(".Password").value;
+
+    fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === "Login successful!") {
+            alert("Login successful!");
+            window.location.href = data.redirect; // Redirect to admin or customer page
+        } else {
+            alert(data.error); // Show error if login fails
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+// Prevent back navigation after login
+window.history.pushState(null, null, window.location.href);
+window.onpopstate = function () {
+    window.history.go(1);
+};
+
+
+
+
+
+
+
+    </script>
+    
+    
+</body>
+</html>
