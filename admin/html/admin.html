@@ -3,60 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="/admin/css/admin.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <title>Admin Panel | Pharmacy Management</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <ul>
-            <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fas fa-user"></i> Users</a></li>
-            <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
-            <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-            <li><a href="#"><i class="fas fa-chart-bar"></i> Reports</a></li>
-            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="#" data-section="dashboard">Dashboard</a></li>
+            <li><a href="#" data-section="users">User Management</a></li>
+            <li><a href="#" data-section="products">Product Management</a></li>
+            <li><a href="#" data-section="orders">Order Management</a></li>
+            <li><a id="logoutBtn" class="logout-button">Log out</a></li>
         </ul>
     </div>
 
-    <div class="menu-btn">
-        <i class="fas fa-bars"></i>
-    </div>
-
-    
-    <!-- Main Content -->
     <div class="main-content">
-        <div class="header">
-            <img src="/profile-icon.png" alt="Profile" class="profile-icon">
-            <h1>Admin Dashboard</h1>
-            <img src="/logo.png" alt="Logo" class="logo-icon">
-        </div>
+        <section id="dashboard" class="section"> 
+            <h1>Dashboard</h1>
+            <p>Welcome to the Pharmacy Management System Admin Panel.</p>
+        </section>
 
-        <div class="dashboard">
-            <div class="card">
-                <h3>Total Users</h3>
-                <p>1,250</p>
+        <section id="users" class="section" style="display:none;">
+            <h1>User Management</h1>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>DOB</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        
+            <button id="addUserBtn" onclick="showUserForm()">➕ Add User</button>
+        
+            <div id="userForm" style="display:none;">
+                <input type="text" id="userName" placeholder="Full Name">
+                <input type="email" id="userEmail" placeholder="Email">
+                <input type="date" id="userDOB" placeholder="Date of Birth">
+                <input type="password" id="userPassword" placeholder="Password">
+                <select id="userRole">
+                    <option value="admin">Admin</option>
+                    <option value="customer">Customer</option>
+                </select>
+                <button onclick="addUser()">Save</button>
+                <button onclick="hideUserForm()">Cancel</button>
             </div>
-            <div class="card">
-                <h3>Orders</h3>
-                <p>345</p>
-            </div>
-            <div class="card">
-                <h3>Products</h3>
-                <p>98</p>
-            </div>
-            <div class="card">
-                <h3>Revenue</h3>
-                <p>$12,540</p>
-            </div>
-        </div>
-    </div>
+        </section>
+        
+        <section id="products" class="section" style="display:none;">
+            <h1>Product Management</h1>
 
-    <script src="/admin/js/admin.js" >
+             <!-- Search Bar -->
+    <input type="text" id="searchInput" placeholder="Search for a medicine..." oninput="fetchProducts()">
+    
 
-    </script>
+
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th> <th>Name</th> <th>Price</th> <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody"></tbody>
+            </table>
+        
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                <button id="prevPage" onclick="changePage(-1)">⬅️ Previous</button>
+                <span id="pageNumber">Page 1</span>
+                <button id="nextPage" onclick="changePage(1)">Next ➡️</button>
+            </div>
+
+            <button onclick="showProductForm()">➕ Add Product</button>
+            <div id="productForm" style="display:none;">
+                <input type="text" id="productName" placeholder="Product Name">
+                <input type="number" id="productPrice" placeholder="Product Price">
+                <input type="text" id="productImageUrl" placeholder="Product Image URL">
+                <button onclick="addProduct()">Save</button>
+                <button onclick="hideProductForm()">Cancel</button>
+            </div>
+        </section>
+        
+        
+        
+
+        <section id="orders" class="section" style="display:none;">
+            <h1>Order Management</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Medicines</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody"></tbody>
+            </table>
+        </section>
+        
+
+    <script src="../js/script.js"></script>
 </body>
 </html>

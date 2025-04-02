@@ -298,7 +298,7 @@ app.post("/login", (req, res) => {
             bcrypt.compare(password, user.password, (err, match) => {
                 if (match) {
                     if (user.role === "admin") {
-                        res.json({ message: "Login successful!", role: "admin", redirect: "/admin/html/index.html" });
+                        res.json({ message: "Login successful!", role: "admin", redirect: "/admin/html/admin.html" });
                     } else {
                         res.json({ message: "Login successful!", role: "customer", redirect: "/User/html/firstpage.html" });
                     }
@@ -340,6 +340,197 @@ app.get("/all-products", (req, res) => {
         }
     });
 });
+
+
+app.get("/admin/products", (req, res) => {
+    let page = parseInt(req.query.page) || 1;
+    let limit = 20;
+    let offset = (page - 1) * limit;
+    let searchQuery = req.query.search ? `${req.query.search}%` : "%";  // ✅ Match only the first letter
+
+    let query = "SELECT * FROM medicines WHERE name LIKE ? LIMIT ? OFFSET ?";
+    let countQuery = "SELECT COUNT(*) AS total FROM medicines WHERE name LIKE ?";
+
+    db.query(query, [searchQuery, limit, offset], (err, results) => {
+        if (err) {
+            console.error('❌ Error fetching products:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        db.query(countQuery, [searchQuery], (err, countResult) => {
+            if (err) {
+                console.error("❌ Error fetching product count:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+
+            let totalProducts = countResult[0].total;
+            let totalPages = Math.ceil(totalProducts / limit);
+
+            res.json({
+                products: results,
+                currentPage: page,
+                totalPages: totalPages
+            });
+        });
+    });
+});
+
+app.delete("/admin/products/:id", (req, res) => {
+    const productId = req.params.id;
+
+    db.query("DELETE FROM medicines WHERE id = ?", [productId], (err, result) => {
+        if (err) {
+            console.error("❌ Error deleting product:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "❌ Product not found!" });
+        }
+
+        res.json({ message: "✅ Product deleted successfully!" });
+    });
+});
+
+app.post("/admin/products", (req, res) => {
+    const { name, price, image_url } = req.body;
+
+    if (!name || !price || !image_url) {
+        return res.status(400).json({ error: "❌ Name, price, and image URL are required!" });
+    }
+
+    db.query(
+        "INSERT INTO medicines (Name, Price, Image_url) VALUES (?, ?, ?)",
+        [name, price, image_url],
+        (err, result) => {
+            if (err) {
+                console.error("❌ Error adding product:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+            res.json({ message: "✅ Product added successfully!", id: result.insertId });
+        }
+    );
+});
+
+
+
+
+// ✅ API: Fetch All Users
+app.get("/admin/users", (req, res) => {
+    db.query("SELECT id, full_name, email, dob, role FROM users", (err, results) => {
+        if (err) {
+            console.error("❌ Error fetching users:", err);
+            return res.status(500).json({ error: "Database error!" });
+        }
+        res.json(results);
+    });
+});
+
+// ✅ API: Add User
+app.post("/admin/users", async (req, res) => {
+    const { full_name, email, dob, password, role } = req.body;
+
+    if (!full_name || !email || !dob || !password || !role) {
+        return res.status(400).json({ error: "All fields are required!" });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const sql = "INSERT INTO users (full_name, email, dob, password, role) VALUES (?, ?, ?, ?, ?)";
+        db.query(sql, [full_name, email, dob, hashedPassword, role], (err, result) => {
+            if (err) {
+                console.error("❌ MySQL Insert Error:", err);
+                return res.status(500).json({ error: "Database error!" });
+            }
+            res.json({ message: "✅ User added successfully!" });
+        });
+    } catch (error) {
+        console.error("❌ Server Error:", error);
+        res.status(500).json({ error: "Server error!" });
+    }
+});
+
+// ✅ API: Delete User
+app.delete("/admin/users/:id", (req, res) => {
+    const userId = req.params.id;
+    db.query("DELETE FROM users WHERE id = ?", [userId], (err, result) => {
+        if (err) {
+            console.error("❌ MySQL Delete Error:", err);
+            return res.status(500).json({ error: "Database error!" });
+        }
+        res.json({ message: "✅ User deleted successfully!" });
+    });
+});
+
+// ✅ API: Edit User
+app.put("/admin/users/:id", (req, res) => {
+    const userId = req.params.id;
+    const { full_name, email, dob, role } = req.body;
+
+    if (!full_name || !email || !dob || !role) {
+        return res.status(400).json({ error: "⚠️ All fields are required!" });
+    }
+
+    const sql = "UPDATE users SET full_name = ?, email = ?, dob = ?, role = ? WHERE id = ?";
+    db.query(sql, [full_name, email, dob, role, userId], (err, result) => {
+        if (err) {
+            console.error("❌ MySQL Update Error:", err);
+            return res.status(500).json({ error: "Database error!" });
+        }
+        res.json({ message: "✅ User updated successfully!" });
+    });
+});
+
+app.post("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.json({ message: "Logged out successfully!" });
+    });
+});
+
+
+app.get("/admin/getOrders", (req, res) => {
+    const sql = "SELECT * FROM orders";
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error fetching orders:", err);
+            return res.status(500).json({ success: false, message: "Error fetching orders." });
+        }
+        res.json(results);
+    });
+});
+
+app.put('/update-order-status/:id', (req, res) => {
+    const orderId = req.params.id;
+    const { status } = req.body;
+
+    const sql = `UPDATE orders SET status = ? WHERE id = ?`;
+    db.query(sql, [status, orderId], (err, result) => {
+        if (err) {
+            console.error('Error updating status:', err);
+            res.status(500).json({ message: 'Database error' });
+        } else {
+            res.json({ message: 'Order status updated successfully' });
+        }
+    });
+});
+
+
+app.delete('/delete-order/:id', (req, res) => {
+    const orderId = req.params.id;
+    const sql = 'DELETE FROM orders WHERE id = ?';
+
+    db.query(sql, [orderId], (err, result) => {
+        if (err) {
+            console.error('Error deleting order:', err);
+            res.status(500).json({ message: 'Failed to delete order' });
+        } else {
+            res.json({ message: 'Order deleted successfully' });
+        }
+    });
+});
+
+
+
 
 // ✅ Start server
 app.listen(PORT, () => {
